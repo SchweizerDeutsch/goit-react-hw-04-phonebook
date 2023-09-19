@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function ContactForm({ onAddContact, contacts }) {
+function ContactForm({ addContact, contacts }) {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
@@ -21,7 +21,7 @@ function ContactForm({ onAddContact, contacts }) {
       return;
     }
 
-    onAddContact(name, number);
+    addContact(name, number);
     setName('');
     setNumber('');
   };

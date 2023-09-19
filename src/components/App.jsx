@@ -1,22 +1,52 @@
 import { useState, useEffect } from 'react';
 import ContactForm from './ContactForm/ContactForm';
 import ContactList from './ContactList/ContactList';
-
 import Filter from './Filter/Filter';
 import { nanoid } from 'nanoid';
 
 function App() {
-  const [contacts, setContacts] = useState([]);
+  const [contacts, setContacts] = useState(
+    JSON.parse(localStorage.getItem('contacts'))
+  );
   const [filter, setFilter] = useState('');
 
-  const addContact = (name, number) => {
+  // Функция для загрузки контактов из localStorage
+  // const loadContactsFromLocalStorage = () => {
+  //   try {
+  //     const savedContacts = localStorage.getItem('contacts');
+  //     return savedContacts ? JSON.parse(savedContacts) : [];
+  //   } catch (error) {
+  //     console.error('Error loading contacts from localStorage:', error);
+  //     return [];
+  //   }
+  // };
+
+  // // Функция для сохранения контактов в localStorage
+  // const saveContactsToLocalStorage = contacts => {
+  //   window.localStorage.setItem('contacts', JSON.stringify(contacts));
+  // };
+
+  // useEffect(() => {
+  //   const loadedContacts = loadContactsFromLocalStorage();
+  //   console.log(setContacts(loadedContacts));
+  // }, []);
+
+  // useEffect(() => {
+  //   saveContactsToLocalStorage(contacts);
+  // }, [contacts]);
+
+  useEffect(() => {
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+  }, [contacts]);
+
+  function addContact(name, number) {
     const newContact = {
       id: nanoid(),
       name,
       number,
     };
     setContacts(prevContacts => [...prevContacts, newContact]);
-  };
+  }
 
   const handleFilterChange = filter => {
     setFilter(filter);
@@ -28,25 +58,10 @@ function App() {
     );
   };
 
-  useEffect(() => {
-    const saveContacts = localStorage.getItem('contacts');
-    if (saveContacts) {
-      const parsedContacts = JSON.parse(saveContacts);
-      console.log('Loaded contacts:', parsedContacts);
-      setContacts(parsedContacts);
-    }
-  }, []);
-
-  useEffect(() => {
-    console.log('Saving contacts:', contacts);
-    localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
-
   return (
     <div>
       <h1>Phonebook</h1>
-      <ContactForm onAddContact={addContact} contacts={contacts} />
-
+      <ContactForm addContact={addContact} contacts={contacts} />
       <h2>Contacts</h2>
       <Filter value={filter} onChangeFilter={handleFilterChange} />
       <ContactList
